@@ -1,5 +1,6 @@
-require "csv"
-filepath = "input.csv"
+require 'csv'
+
+filepath = 'input.csv'
 
 CRATES = [
   %w[R P C D B G],
@@ -27,13 +28,13 @@ instructions.each do |instruction|
   from = moves[1]
   to = moves[2]
 
-  number_of_moves. times do
+  number_of_moves.times do
     CRATES[to - 1] << CRATES[from - 1].last
     CRATES[from - 1].delete_at(-1)
   end
 end
 
-puts "Top of the stack:"
+puts 'Top of the stack:'
 puts "1. #{CRATES[0][-1]}"
 puts "2. #{CRATES[1][-1]}"
 puts "3. #{CRATES[2][-1]}"
