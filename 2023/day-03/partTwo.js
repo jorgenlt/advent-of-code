@@ -66,7 +66,6 @@ const main = async () => {
     // Log the final sum
     console.log(sum);
   } catch (err) {
-    // Log any errors that occur during execution
     console.error(err);
   }
 };
