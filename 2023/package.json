@@ -10,7 +10,5 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "papaparse": "^5.4.1"
-  }
+  "dependencies": {}
 }
