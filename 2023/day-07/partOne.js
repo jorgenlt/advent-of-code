@@ -2,7 +2,7 @@ import { readLines } from "../utils/readLines.js";
 
 const main = async () => {
   try {
-    const hands = (await readLines("test.txt")).map((e) => {
+    const hands = (await readLines("input.txt")).map((e) => {
       const hand = e.split(" ")[0];
       const bid = parseInt(e.split(" ")[1]);
       return [hand, bid];
