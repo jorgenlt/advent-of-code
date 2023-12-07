@@ -13,7 +13,7 @@ const main = async () => {
 
     // Calculating total winnings
     const winnings = totalWinnings(sortedHands);
-    // 251515496
+    
     console.log("Total winnings:", winnings);
   } catch (err) {
     console.error(err);
