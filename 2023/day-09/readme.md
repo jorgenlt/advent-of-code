@@ -36,9 +36,9 @@
   <em>history</em> of a single value. For example:
 </p>
 <pre><code>0 3 6 9 12 15
-1 3 6 10 15 21
-10 13 16 21 30 45
-</code></pre>
+  1 3 6 10 15 21
+  10 13 16 21 30 45
+  </code></pre>
 <p>
   To best protect the oasis, your environmental report should include a
   <em>prediction of the next value</em> in each history. To do this, start by
@@ -60,9 +60,9 @@
   be arranged like this:
 </p>
 <pre><code>0   3   6   9  12  15
-  3   3   3   3   3
-    0   0   0   0
-</code></pre>
+    3   3   3   3   3
+      0   0   0   0
+  </code></pre>
 <p>
   To extrapolate, start by adding a new zero to the end of your list of zeroes;
   because the zeroes represent differences between the two values above them,
@@ -70,9 +70,9 @@
 </p>
 <p></p>
 <pre><code>0   3   6   9  12  15   <em>B</em>
-  3   3   3   3   3   <em>A</em>
-    0   0   0   0   <em>0</em>
-</code></pre>
+    3   3   3   3   3   <em>A</em>
+      0   0   0   0   <em>0</em>
+  </code></pre>
 <p>
   You can then start filling in placeholders from the bottom up.
   <code>A</code> needs to be the result of increasing <code>3</code> (the value
@@ -81,9 +81,9 @@
   >:
 </p>
 <pre><code>0   3   6   9  12  15   B
-  3   3   3   3   <em>3</em>   <em>3</em>
-    0   0   0   0   <em>0</em>
-</code></pre>
+    3   3   3   3   <em>3</em>   <em>3</em>
+      0   0   0   0   <em>0</em>
+  </code></pre>
 <p>
   Finally, you can fill in <code>B</code>, which needs to be the result of
   increasing <code>15</code> (the value to its left) by <code>3</code> (the
@@ -91,9 +91,9 @@
   >:
 </p>
 <pre><code>0   3   6   9  12  <em>15</em>  <em>18</em>
-  3   3   3   3   3   <em>3</em>
-    0   0   0   0   0
-</code></pre>
+    3   3   3   3   3   <em>3</em>
+      0   0   0   0   0
+  </code></pre>
 <p>
   So, the next value of the first history is <code><em>18</em></code
   >.
@@ -103,19 +103,19 @@
   sequence:
 </p>
 <pre><code>1   3   6  10  15  21
-  2   3   4   5   6
-    1   1   1   1
-      0   0   0
-</code></pre>
+    2   3   4   5   6
+      1   1   1   1
+        0   0   0
+  </code></pre>
 <p>
   Then, following the same process as before, work out the next value in each
   sequence from the bottom up:
 </p>
 <pre><code>1   3   6  10  15  21  <em>28</em>
-  2   3   4   5   6   <em>7</em>
-    1   1   1   1   <em>1</em>
-      0   0   0   <em>0</em>
-</code></pre>
+    2   3   4   5   6   <em>7</em>
+      1   1   1   1   <em>1</em>
+        0   0   0   <em>0</em>
+  </code></pre>
 <p>
   So, the next value of the second history is <code><em>28</em></code
   >.
@@ -125,11 +125,11 @@
   found the same way:
 </p>
 <pre><code>10  13  16  21  30  45  <em>68</em>
-   3   3   5   9  15  <em>23</em>
-     0   2   4   6   <em>8</em>
-       2   2   2   <em>2</em>
-         0   0   <em>0</em>
-</code></pre>
+     3   3   5   9  15  <em>23</em>
+       0   2   4   6   <em>8</em>
+         2   2   2   <em>2</em>
+           0   0   <em>0</em>
+  </code></pre>
 <p>
   So, the next value of the third history is <code><em>68</em></code
   >.
@@ -141,5 +141,49 @@
 </p>
 <p>
   Analyze your OASIS report and extrapolate the next value for each history.
+  <em>What is the sum of these extrapolated values?</em>
+</p>
+<p>Your puzzle answer was <code>2105961943</code>.</p>
+<p class="day-success">
+  The first half of this puzzle is complete! It provides one gold star: *
+</p>
+<h2 id="part2">--- Part Two ---</h2>
+<p>
+  Of course, it would be nice to have <em>even more history</em> included in
+  your report. Surely it's safe to just <em>extrapolate backwards</em> as well,
+  right?
+</p>
+<p>
+  For each history, repeat the process of finding differences until the sequence
+  of differences is entirely zero. Then, rather than adding a zero to the end
+  and filling in the next values of each previous sequence, you should instead
+  add a zero to the <em>beginning</em> of your sequence of zeroes, then fill in
+  new <em>first</em> values for each previous sequence.
+</p>
+<p>
+  In particular, here is what the third example history looks like when
+  extrapolating back in time:
+</p>
+<pre><code><em>5</em>  10  13  16  21  30  45
+    <em>5</em>   3   3   5   9  15
+     <em>-2</em>   0   2   4   6
+        <em>2</em>   2   2   2
+          <em>0</em>   0   0
+  </code></pre>
+<p>
+  Adding the new values on the left side of each sequence from bottom to top
+  eventually reveals the new left-most history value: <code><em>5</em></code
+  >.
+</p>
+<p>
+  Doing this for the remaining example data above results in previous values of
+  <code><em>-3</em></code> for the first history and <code><em>0</em></code> for
+  the second history. Adding all three new values together produces
+  <code><em>2</em></code
+  >.
+</p>
+<p>
+  Analyze your OASIS report again, this time extrapolating the
+  <em>previous</em> value for each history.
   <em>What is the sum of these extrapolated values?</em>
 </p>
