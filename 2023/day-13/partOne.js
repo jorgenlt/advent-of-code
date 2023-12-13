@@ -1,13 +1,9 @@
-// Import the fs/promises module for handling file operations asynchronously
 import fs from "fs/promises";
 
-// Define the main asynchronous function
 const main = async () => {
   try {
-    // Read the contents of the "input.txt" file as a UTF-8 encoded string
     const input = await fs.readFile("input.txt", "utf8");
 
-    // Initialize a variable to keep track of the total sum
     let sum = 0;
 
     // Split the input string into grids
