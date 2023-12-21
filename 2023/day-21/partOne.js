@@ -2,19 +2,9 @@ import fs from "fs/promises";
 
 const main = async () => {
   try {
-    const input = await fs.readFile("test.txt", "utf8");
+    const input = await fs.readFile("input.txt", "utf8");
+    const map = input.trim().split("\n");
 
-    // Map of plots
-    const map = input.split("\n");
-
-    console.log(map);
-
-    // Get start position
-    const startPos = map.indexOf("S");
-    const startRow = Math.floor(startPos / map[0].length);
-    const startCol = startPos % map[0].length;
-
-    // Directions array
     const dirs = [
       [-1, 0],
       [1, 0],
@@ -22,43 +12,58 @@ const main = async () => {
       [0, 1],
     ];
 
-    // Visited plots
-    let visited = new Set();
-    visited.add(startPos);
+    let startRow;
+    let startCol;
+    const steps = 64;
 
-    // BFS queue
-    let queue = [[startRow, startCol, 0]];
-
-    // Search 64 steps
-    while (queue.length > 0) {
-      const [row, col, steps] = queue.shift();
-
-      // Check if within steps
-      if (steps === 64) break;
-
-      // Check neighbors
-      for (let [dr, dc] of dirs) {
-        let r = row + dr;
-        let c = col + dc;
-
-        // Within bounds & plot & unvisited
-        if (
-          r >= 0 &&
-          r < map.length &&
-          c >= 0 &&
-          c < map[0].length &&
-          map[r][c] === "." &&
-          !visited.has(r * map[0].length + c)
-        ) {
-          visited.add(r * map[0].length + c);
-          queue.push([r, c, steps + 1]);
+    // Find start position
+    for (let i = 0; i < map.length; i++) {
+      for (let j = 0; j < map[i].length; j++) {
+        if (map[i][j] === "S") {
+          startRow = i;
+          startCol = j;
         }
       }
     }
 
-    // Get final visited count
+    // Setup visited plots
+    let visited = new Set();
+    visited.add(startRow + "," + startCol);
+
+    // BFS queue
+    let queue = [[startRow, startCol, 0]];
+
+    // Explore map
+    while (queue.length > 0) {
+      const [row, col, currentSteps] = queue.shift();
+
+      // Check all directions
+      for (let [dr, dc] of dirs) {
+        let r = row + dr;
+        let c = col + dc;
+
+        // Validate indices
+        if (
+          r >= 0 &&
+          r < map.length &&
+          c >= 0 &&
+          c < map[row].length &&
+          map[r][c] === "."
+        ) {
+          let key = r + "," + c;
+          if (!visited.has(key)) {
+            visited.add(key);
+            queue.push([r, c, currentSteps + 1]);
+          }
+        }
+      }
+
+      // Stop when steps reached
+      if (currentSteps === steps) break;
+    }
+
+    // Return count of visited
     console.log(visited.size);
-    console.log(visited)
   } catch (err) {
     console.error(err);
   }
