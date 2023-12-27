@@ -1,8 +1,9 @@
 {
-  "name": "2015",
+  "name": "advent-of-code",
   "version": "1.0.0",
-  "description": "",
+  "description": "My solutions to [Advent of Code](https://adventofcode.com).",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

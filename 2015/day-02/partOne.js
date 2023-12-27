@@ -1,4 +1,4 @@
-const fs = require("node:fs/promises");
+import fs from "fs/promises";
 
 const main = async () => {
   const input = (await fs.readFile("input.txt", "utf8"))
@@ -23,7 +23,7 @@ const main = async () => {
     result += surfaceArea + smallestSideArea;
   });
 
-  console.log(result);  
+  console.log(result);
 };
 
 main();

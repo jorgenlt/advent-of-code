@@ -1,4 +1,4 @@
-const fs = require("node:fs/promises");
+import fs from 'fs/promises'
 
 const DIRECTIONS = {
   "^": [0, 1],

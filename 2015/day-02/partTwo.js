@@ -1,4 +1,4 @@
-const fs = require("node:fs/promises");
+import fs from 'fs/promises'
 
 const ribbonLength = (a, b, c) => {
   const [min, mid, max] = [a, b, c].sort((a, b) => a - b);

@@ -1,4 +1,4 @@
-const { readFile } = require("node:fs/promises");
+import { readFile } from "fs/promises";
 
 const main = async () => {
   try {
