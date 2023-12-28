@@ -5,22 +5,17 @@ const removeNonDigitsAndCommas = (str) => {
   return str.replace(/[^\d,]/g, "");
 };
 
-const parsingIntructions = (input) => {
-  const instructions = [];
-
-  input.split("\n").forEach((e) => {
-    const instruction = [];
-
-    const action = e.split(/\d/g)[0].replace("turn", "").trim();
-    instruction.push(action);
-
-    e.split("through").forEach((f) => {
-      instruction.push(removeNonDigitsAndCommas(f));
-    });
-
-    instructions.push(instruction);
+const parsingInstructions = (input) => {
+  const instructions = input.split("\n").map((e) => {
+    const [action, from, to] = e
+      .match(/(toggle|turn on|turn off) (\d+,\d+) through (\d+,\d+)/)
+      .slice(1);
+    return [
+      action,
+      removeNonDigitsAndCommas(from),
+      removeNonDigitsAndCommas(to),
+    ];
   });
-
   return instructions;
 };
 
@@ -28,7 +23,7 @@ const main = async () => {
   try {
     const input = (await readFile("input.txt", "utf8")).trim();
 
-    const instructions = parsingIntructions(input);
+    const instructions = parsingInstructions(input);
 
     const lights = new Map();
 
@@ -47,10 +42,18 @@ const main = async () => {
       coordinates.forEach((coordinate) => {
         const currentStatus = lights.get(coordinate);
 
-        if (action === "toggle") {
-          lights.set(coordinate, currentStatus === "off" ? "on" : "off");
-        } else {
-          lights.set(coordinate, action);
+        switch (action) {
+          case "toggle":
+            lights.set(coordinate, currentStatus === "off" ? "on" : "off");
+            break;
+          case "turn on":
+            lights.set(coordinate, "on");
+            break;
+          case "turn off":
+            lights.set(coordinate, "off");
+            break;
+          default:
+            console.error(`Action ${action} not found.`);
         }
       });
     });
