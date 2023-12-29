@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
 import manhattanDistance from "../../utils/manhattanDistance.js";
-import getCoordRange from "../../utils/getCoordRange.js";
+import getCoordRange from '../../utils/getCoordRange.js'
 
 const main = async () => {
   try {
@@ -64,22 +64,16 @@ const main = async () => {
       }
 
       const coordRange = getCoordRange(oldCoord.join(), currentCoord.join());
-
-      if (visited.has(currentCoord.join())) {
-        alreadyVisited.add(currentCoord.join());
-        console.log(`already visited ${currentCoord}`);
-      }
-
-      coordRange.forEach((coord) => {
+      
+      coordRange.slice(1).forEach((coord) => {
+        if (visited.has(coord)) {
+          alreadyVisited.add(coord);
+        }
         visited.add(coord);
-        console.log(visited);
       });
     });
 
-    console.log(alreadyVisited);
-
     const firstRevisited = [...alreadyVisited][0].split(",");
-    console.log(firstRevisited);
 
     console.log(manhattanDistance(start, firstRevisited));
   } catch (err) {
