@@ -1,17 +1,32 @@
-import manhattanDistance from "../../utils/manhattanDistance.js";
-import findCoordsInUlamsSpiral from "../../utils/findCoordsInUlamsSpiral.js";
+import ulamsSpiralCoords from "../../utils/ulamsSpiralCoords.js";
+import sumAdjacentPositionsInMap from "../../utils/sumAdjacentPositionsInMap.js";
 
 const main = async () => {
   try {
     const input = 361527;
 
-    const start = [0, 0];
+    // Map to store coordinates "x, y" and value
+    const map = new Map();
 
-    const end = findCoordsInUlamsSpiral(input);
+    // Create coordinates in an Ulams spiral, estimate size of the spiral
+    const ulamsCoords = ulamsSpiralCoords(input / 1000);
 
-    const shortestPath = manhattanDistance(start, end);
+    // Iterate all the created coordinates
+    for (let i = 0; i < ulamsCoords.length; i++) {
+      // Current coordinates
+      const coords = ulamsCoords[i];
 
-    console.log(shortestPath);
+      const sumAdjacentPositions = sumAdjacentPositionsInMap(map, coords);
+
+      // Update map with coordinates and sum of adjacent positions
+      map.set(coords.join(), sumAdjacentPositions);
+
+      // When the sum is larger than the input number, log the sum
+      if (sumAdjacentPositions > input) {
+        console.log(sumAdjacentPositions);
+        return;
+      }
+    }
   } catch (err) {
     console.error(err);
   }
