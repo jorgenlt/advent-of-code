@@ -1,3 +1,4 @@
+// from start [x1, y1] to end [x2, y2]
 const manhattanDistance = (a, b) => {
   var distance = 0;
   var dimensions = Math.max(a.length, b.length);
