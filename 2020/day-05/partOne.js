@@ -14,7 +14,6 @@ const split = (low, high, splitDirection) => {
   }
 };
 
-
 const findRowCol = (instruction, low, high) => {
   for (let i = 0; i < instruction.length; i++) {
     const section = instruction[i];
@@ -26,7 +25,7 @@ const findRowCol = (instruction, low, high) => {
   if (low === high) {
     return low;
   } else {
-    console.error("No row or col was found.")
+    console.error("No row or col was found.");
   }
 };
 
@@ -36,7 +35,7 @@ const main = async () => {
 
     let highestId = 0;
 
-    input.forEach(line => {
+    input.forEach((line) => {
       const rowInstruction = line.substring(0, 7);
       const colInstruction = line.substring(7, 10);
 
@@ -48,7 +47,7 @@ const main = async () => {
       if (seatId > highestId) {
         highestId = seatId;
       }
-    })
+    });
 
     console.log(highestId);
   } catch (err) {
