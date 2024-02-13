@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
 
-function decompressedLength(str) {
+const decompressedLength = (str) => {
   let length = 0;
   let i = 0;
 
@@ -29,7 +29,7 @@ function decompressedLength(str) {
   }
 
   return length;
-}
+};
 
 const main = async () => {
   try {
