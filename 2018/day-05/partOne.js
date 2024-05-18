@@ -1,11 +1,13 @@
 import { readFile } from "fs/promises";
 
 const doesReact = (unit, adjacentUnit) => {
-  if (
-    unit === adjacentUnit.toLowerCase() ||
-    unit === adjacentUnit.toUpperCase()
-  ) {
-    return true;
+  if (unit !== adjacentUnit) {
+    if (
+      unit === adjacentUnit.toLowerCase() ||
+      unit === adjacentUnit.toUpperCase()
+    ) {
+      return true;
+    }
   }
   return false;
 };
