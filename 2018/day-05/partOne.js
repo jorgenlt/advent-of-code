@@ -50,6 +50,3 @@ const main = async () => {
 };
 
 main();
-
-// Part1: 10564 (180ms)
-// Part2: 6336 (2903ms)
