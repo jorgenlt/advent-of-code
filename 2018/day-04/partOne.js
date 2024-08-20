@@ -1,59 +1,53 @@
-
 import { readFile } from "fs/promises";
 
 const main = async () => {
   try {
-    const input = (await readFile("test.txt", "utf-8"))
-      .trim()
-      .split("\n")
-      .map((e) => {
-        const dateStr = e
-          .split("]")[0]
-          .replace("[", "")
-          .replace("1518", "1970");
+    const records = (await readFile("input.txt", "utf-8")).trim().split("\n");
 
-        const timeStamp = new Date(dateStr).getTime();
+    // parse and sort
+    const sortedRecords = records.sort();
 
-        const event = e.split("]")[1].trim();
-        let newEvent;
+    let guardSleepData = {};
+    let currentGuard = null;
+    let sleepStart = null;
 
-        if (/\d+/.test(event)) {
-          newEvent = event.match(/\d+/)[0];
-        } else if (event === "falls asleep") {
-          newEvent = "#";
-        } else if (event === "wakes up") {
-          newEvent = ".";
+    for (let record of sortedRecords) {
+      let minute = parseInt(record.substring(15, 17));
+      if (record.includes("begins shift")) {
+        currentGuard = record.match(/#\d+/)[0];
+        if (!guardSleepData[currentGuard]) {
+          guardSleepData[currentGuard] = Array(60).fill(0);
         }
+      } else if (record.includes("falls asleep")) {
+        sleepStart = minute;
+      } else if (record.includes("wakes up")) {
+        for (let i = sleepStart; i < minute; i++) {
+          guardSleepData[currentGuard][i]++;
+        }
+      }
+    }
 
-        return [timeStamp, newEvent];
-      });
+    // guard who slept the most
+    let maxSleep = 0;
+    let sleepiestGuard = null;
 
-    // Sort by date
-    input.sort((a, b) => a[0] - b[0]);
+    for (let guard in guardSleepData) {
+      const totalSleep = guardSleepData[guard].reduce((a, b) => a + b, 0);
+      if (totalSleep > maxSleep) {
+        maxSleep = totalSleep;
+        sleepiestGuard = guard;
+      }
+    }
 
-    // Map to save data
-    // const guardData = new Map();
+    // find the minute that the sleepiest guard slept the most
+    let sleepiestMinute = guardSleepData[sleepiestGuard].indexOf(
+      Math.max(...guardSleepData[sleepiestGuard])
+    );
 
-
-    // Find the guard that has the most minutes asleep. 
-    // What minute does that guard spend asleep the most?
-
-    // set current guard
-    // find next asleep #
-    // set minute fell asleep 
-    // i+1 will be wake up, find minute wake up
-    // minute wake up - minute asleep = asleep
-    // save to currentAsleep
-    // let currentAsleep = []
-    // when new guard, save result in map. reset current counters
-
-    // find guard with most minutes asleep
-
-
-
-
-    // console.log(guardData);
-    console.log(input);
+    // result
+    const guardId = parseInt(sleepiestGuard.substring(1));
+    const result = guardId * sleepiestMinute;
+    console.log(result);
   } catch (err) {
     console.error(err);
   }
