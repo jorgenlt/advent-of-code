@@ -9,8 +9,7 @@ for i in $(seq -w 1 25); do
   touch "$dir_name/test.txt"
 
   # Create JavaScript files with specified content inside each folder
-  js_content='
-  
+  js_content='  
 import { readFile } from "fs/promises";
 
 const main = async () => {
