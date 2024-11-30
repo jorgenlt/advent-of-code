@@ -10,12 +10,13 @@ for i in $(seq -w 1 25); do
 
   # Create JavaScript files with specified content inside each folder
   js_content='
+  
 import { readFile } from "fs/promises";
 
 const main = async () => {
   try {
-    const input = (await readFile("input.txt", "utf-8")).trim();
-
+    const input = await readFile("input.txt", "utf-8");
+    
     console.log(input);
   } catch (err) {
     console.error(err);
