@@ -9,13 +9,13 @@ const main = async () => {
     const rightList = [];
 
     input.forEach((line) => {
-      const leftNum = Number(line.match(/\d+/g)[0]);
-      const rightNum = Number(line.match(/\d+/g)[1]);
+      const [leftNum, rightNum] = line.match(/\d+/g).map(Number);
+
       leftList.push(leftNum);
       rightList.push(rightNum);
     });
 
-    // Sort the lists from smallest to largest Then sort from smallest to largest
+    // Sort the lists from smallest to largest number
     leftList.sort((a, b) => a - b);
     rightList.sort((a, b) => a - b);
 
