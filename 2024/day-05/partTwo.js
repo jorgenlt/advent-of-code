@@ -1,88 +1,83 @@
 import { readFile } from "fs/promises";
 
-const isOrderCorrect = (order, rules) => {
-  const indexMap = new Map();
-  order.forEach((page, index) => indexMap.set(page, index));
-
-  for (const [before, after] of rules) {
-    if (indexMap.has(before) && indexMap.has(after)) {
-      if (indexMap.get(before) > indexMap.get(after)) {
-        return false;
-      }
+const isUpdateInCorrectOrder = (update, rules) => {
+  for (let [before, after] of rules) {
+    let indexBefore = update.indexOf(before);
+    let indexAfter = update.indexOf(after);
+    if (indexBefore !== -1 && indexAfter !== -1 && indexBefore > indexAfter) {
+      return false;
     }
   }
   return true;
 };
 
-const reorderUpdate = (update, rules) => {
-  const dependencyGraph = new Map();
-  const indegree = new Map();
+// Function to sort an update according to the rules
+// https://www.freecodecamp.org/news/how-to-implement-bubble-sort-algorithm-with-javascript/
+const sortUpdate = (update, rules) => {
+  let sorted = [...update];
+  let changed = true;
 
-  update.forEach((page) => {
-    dependencyGraph.set(page, []);
-    indegree.set(page, 0);
-  });
+  while (changed) {
+    changed = false;
+    for (let i = 0; i < sorted.length - 1; i++) {
+      for (let [before, after] of rules) {
+        let indexBefore = sorted.indexOf(before);
+        let indexAfter = sorted.indexOf(after);
 
-  rules.forEach(([before, after]) => {
-    if (dependencyGraph.has(before) && dependencyGraph.has(after)) {
-      dependencyGraph.get(before).push(after);
-      indegree.set(after, indegree.get(after) + 1);
-    }
-  });
-
-  const queue = [];
-  indegree.forEach((count, page) => {
-    if (count === 0) queue.push(page);
-  });
-
-  const sortedOrder = [];
-  while (queue.length > 0) {
-    const current = queue.shift();
-    sortedOrder.push(current);
-
-    dependencyGraph.get(current).forEach((neighbor) => {
-      indegree.set(neighbor, indegree.get(neighbor) - 1);
-      if (indegree.get(neighbor) === 0) {
-        queue.push(neighbor);
+        if (
+          indexBefore !== -1 &&
+          indexAfter !== -1 &&
+          indexBefore > indexAfter
+        ) {
+          // Swap the pages
+          [sorted[indexBefore], sorted[indexAfter]] = [
+            sorted[indexAfter],
+            sorted[indexBefore],
+          ];
+          changed = true;
+        }
       }
-    });
+    }
   }
 
-  return sortedOrder;
-};
-
-const findMiddlePageNumber = (update) => {
-  const middleIndex = Math.floor(update.length / 2);
-  return update[middleIndex];
+  return sorted;
 };
 
 const main = async () => {
   try {
-    const [rulesSection, updatesSection] = (
-      await readFile("input.txt", "utf-8")
-    )
+    const [rulesPart, updatesPart] = (await readFile("input.txt", "utf-8"))
       .trim()
       .split("\n\n");
 
-    const rules = rulesSection
+    const rules = rulesPart
       .split("\n")
       .map((line) => line.split("|").map(Number));
 
-    const updates = updatesSection
+    const updates = updatesPart
       .split("\n")
       .map((line) => line.split(",").map(Number));
 
-    let sumOfMiddlePages = 0;
+    const incorrectUpdates = [];
 
+    // Find updates with invalid order
     updates.forEach((update) => {
-      if (!isOrderCorrect(update, rules)) {
-        const correctedOrder = reorderUpdate(update, rules);
-        const middlePageNumber = findMiddlePageNumber(correctedOrder);
-        sumOfMiddlePages += middlePageNumber;
+      if (!isUpdateInCorrectOrder(update, rules)) {
+        incorrectUpdates.push(update);
       }
     });
 
-    console.log(sumOfMiddlePages);
+    // Sort incorrect orders according to the rules
+    let sumMiddlePages = 0;
+
+    incorrectUpdates.forEach((update) => {
+      const sortedUpdate = sortUpdate(update, rules);
+
+      const middleIndex = Math.floor(sortedUpdate.length / 2);
+
+      sumMiddlePages += sortedUpdate[middleIndex];
+    });
+
+    console.log(sumMiddlePages);
   } catch (err) {
     console.error(err);
   }
