@@ -1,16 +1,5 @@
 import { readFile } from "fs/promises";
 
-const parseInput = (input) => {
-  const sections = input.trim().split("\n\n");
-  const rules = sections[0]
-    .split("\n")
-    .map((rule) => rule.split("|").map(Number));
-  const updates = sections[1]
-    .split("\n")
-    .map((update) => update.split(",").map(Number));
-  return { rules, updates };
-};
-
 const isOrderCorrect = (order, rules) => {
   const indexMap = new Map();
   order.forEach((page, index) => indexMap.set(page, index));
@@ -67,26 +56,33 @@ const findMiddlePageNumber = (update) => {
   return update[middleIndex];
 };
 
-const solvePuzzle = (input) => {
-  const { rules, updates } = parseInput(input);
-  let sumOfMiddlePages = 0;
-
-  updates.forEach((update) => {
-    if (!isOrderCorrect(update, rules)) {
-      const correctedOrder = reorderUpdate(update, rules);
-      const middlePageNumber = findMiddlePageNumber(correctedOrder);
-      sumOfMiddlePages += middlePageNumber;
-    }
-  });
-
-  return sumOfMiddlePages;
-};
-
 const main = async () => {
   try {
-    const input = await readFile("input.txt", "utf-8");
+    const [rulesSection, updatesSection] = (
+      await readFile("input.txt", "utf-8")
+    )
+      .trim()
+      .split("\n\n");
 
-    console.log(solvePuzzle(input));
+    const rules = rulesSection
+      .split("\n")
+      .map((line) => line.split("|").map(Number));
+
+    const updates = updatesSection
+      .split("\n")
+      .map((line) => line.split(",").map(Number));
+
+    let sumOfMiddlePages = 0;
+
+    updates.forEach((update) => {
+      if (!isOrderCorrect(update, rules)) {
+        const correctedOrder = reorderUpdate(update, rules);
+        const middlePageNumber = findMiddlePageNumber(correctedOrder);
+        sumOfMiddlePages += middlePageNumber;
+      }
+    });
+
+    console.log(sumOfMiddlePages);
   } catch (err) {
     console.error(err);
   }
