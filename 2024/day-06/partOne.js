@@ -10,7 +10,7 @@ const findGuardLocation = (grid) => {
 
 const main = async () => {
   try {
-    const grid = (await readFile("test.txt", "utf-8"))
+    const grid = (await readFile("input.txt", "utf-8"))
       .trim()
       .split("\n")
       .map((line) => line.split(""));
