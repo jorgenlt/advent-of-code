@@ -27,18 +27,6 @@ const bfs = (map, startRow, startCol) => {
     const [row, col] = queue.shift();
     const key = `${row},${col}`;
 
-    // Continue if already visited
-    if (visited.has(key)) continue;
-
-    visited.add(key);
-
-    const currentHeight = map[row][col];
-
-    // If this is a "9", add it to both local and global sets
-    if (currentHeight === 9) {
-      nines.add(key);
-    }
-
     // Explore neighbors in 4 directions (up, down, left, right)
     const directions = [
       [row - 1, col], // up
@@ -46,6 +34,18 @@ const bfs = (map, startRow, startCol) => {
       [row, col - 1], // left
       [row, col + 1], // right
     ];
+
+    // Continue if already visited
+    if (visited.has(key)) continue;
+
+    visited.add(key);
+
+    const currentHeight = map[row][col];
+
+    // If this is a "9", add it set of nines
+    if (currentHeight === 9) {
+      nines.add(key);
+    }
 
     for (const [newRow, newCol] of directions) {
       if (!isPositionValid(map, newRow, newCol)) continue;
@@ -75,8 +75,7 @@ const main = async () => {
     let totalScore = 0;
 
     for (const [row, col] of trailHeads) {
-      const score = bfs(map, row, col);
-      totalScore += score;
+      totalScore += bfs(map, row, col);
     }
 
     console.log(totalScore);
