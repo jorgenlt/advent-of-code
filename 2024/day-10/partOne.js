@@ -4,6 +4,20 @@ const isPositionValid = (map, row, col) => {
   return row >= 0 && row < map.length && col >= 0 && col < map[0].length;
 };
 
+const getTrailHeads = (map) => {
+  const trailHeads = [];
+
+  for (let r = 0; r < map.length; r++) {
+    for (let c = 0; c < map[r].length; c++) {
+      if (map[r][c] === 0) {
+        trailHeads.push([r, c]);
+      }
+    }
+  }
+
+  return trailHeads;
+};
+
 const bfs = (map, startRow, startCol) => {
   const queue = [[startRow, startCol]]; // [row, col]
   const visited = new Set();
@@ -14,7 +28,7 @@ const bfs = (map, startRow, startCol) => {
     const key = `${row},${col}`;
 
     // Continue if already visited
-    if (visited.has(key)) continue; 
+    if (visited.has(key)) continue;
 
     visited.add(key);
 
@@ -56,21 +70,12 @@ const main = async () => {
       .split("\n")
       .map((line) => line.split("").map(Number));
 
-    const trailHeads = [];
-    for (let r = 0; r < map.length; r++) {
-      for (let c = 0; c < map[r].length; c++) {
-        if (map[r][c] === 0) {
-          trailHeads.push([r, c]);
-        }
-      }
-    }
-
-    const visited = new Set(); // Tracks globally visited "9" positions
+    const trailHeads = getTrailHeads(map);
 
     let totalScore = 0;
 
     for (const [row, col] of trailHeads) {
-      const score = bfs(map, row, col, visited);
+      const score = bfs(map, row, col);
       totalScore += score;
     }
 
