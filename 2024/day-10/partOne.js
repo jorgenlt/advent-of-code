@@ -4,24 +4,25 @@ const isPositionValid = (map, row, col) => {
   return row >= 0 && row < map.length && col >= 0 && col < map[0].length;
 };
 
-const bfs = (map, startRow, startCol, globalVisited) => {
+const bfs = (map, startRow, startCol) => {
   const queue = [[startRow, startCol]]; // [row, col]
-  const localVisited = new Set();
-  const localNines = new Set();
+  const visited = new Set();
+  const nines = new Set();
 
   while (queue.length > 0) {
     const [row, col] = queue.shift();
     const key = `${row},${col}`;
 
-    if (localVisited.has(key)) continue;
-    localVisited.add(key);
+    // Continue if already visited
+    if (visited.has(key)) continue; 
+
+    visited.add(key);
 
     const currentHeight = map[row][col];
 
     // If this is a "9", add it to both local and global sets
     if (currentHeight === 9) {
-      localNines.add(key);
-      globalVisited.add(key);
+      nines.add(key);
     }
 
     // Explore neighbors in 4 directions (up, down, left, right)
@@ -45,7 +46,7 @@ const bfs = (map, startRow, startCol, globalVisited) => {
   }
 
   // Return the number of unique "9" positions reachable from this trailhead
-  return localNines.size;
+  return nines.size;
 };
 
 const main = async () => {
@@ -64,12 +65,12 @@ const main = async () => {
       }
     }
 
-    const globalVisited = new Set(); // Tracks globally visited "9" positions
+    const visited = new Set(); // Tracks globally visited "9" positions
 
     let totalScore = 0;
 
     for (const [row, col] of trailHeads) {
-      const score = bfs(map, row, col, globalVisited);
+      const score = bfs(map, row, col, visited);
       totalScore += score;
     }
 
