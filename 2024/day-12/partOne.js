@@ -28,48 +28,49 @@ const main = async () => {
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        // Check if the current cell has not been visited
-        if (!visited.has(`${row},${col}`)) {
-          const regionType = grid[row][col];
+        // Skip if the current cell has already been visited
+        if (visited.has(`${row},${col}`)) continue;
 
-          let areaCount = 0;
-          let perimeterCount = 0;
+        const regionType = grid[row][col];
 
-          const queue = []; // BFS queue
+        let areaCount = 0;
+        let perimeterCount = 0;
 
-          queue.push([row, col]); // Add current row and col to the queue
+        const queue = []; // BFS queue
 
-          visited.add(`${row},${col}`); // Mark current cell as visited
+        queue.push([row, col]); // Add current row and col to the queue
 
-          // Start BFS
-          while (queue.length > 0) {
-            const [row, col] = queue.shift(); // Get the next cell in the queue and also remove it from the queue
+        visited.add(`${row},${col}`); // Mark current cell as visited
 
-            areaCount++;
+        // Start BFS
+        while (queue.length > 0) {
+          const [row, col] = queue.shift(); // Get the next cell in the queue and also remove it from the queue
 
-            // Explore all four possible directions
-            directions.forEach(([dx, dy]) => {
-              const newRow = row + dx;
-              const newCol = col + dy;
+          areaCount++;
 
-              // Check if the neighboring cell is within bounds and of the same region type
-              if (
-                isWithinBounds(newRow, newCol, grid) &&
-                grid[newRow][newCol] === regionType
-              ) {
-                // If the neighboring cell is not visited, add it to the queue and mark as visited
-                if (!visited.has(`${newRow},${newCol}`)) {
-                  queue.push([newRow, newCol]);
-                  visited.add(`${newRow},${newCol}`);
-                }
-              } else {
-                perimeterCount++;
+          // Explore all four possible directions
+          directions.forEach(([dx, dy]) => {
+            const newRow = row + dx;
+            const newCol = col + dy;
+
+            // Check if the neighboring cell is within bounds and of the same region type
+            if (
+              isWithinBounds(newRow, newCol, grid) &&
+              grid[newRow][newCol] === regionType
+            ) {
+              // If the neighboring cell is not visited, add it to the queue and mark as visited
+              if (!visited.has(`${newRow},${newCol}`)) {
+                queue.push([newRow, newCol]);
+                
+                visited.add(`${newRow},${newCol}`);
               }
-            });
-          }
-
-          totalPrice += areaCount * perimeterCount;
+            } else {
+              perimeterCount++;
+            }
+          });
         }
+
+        totalPrice += areaCount * perimeterCount;
       }
     }
 
