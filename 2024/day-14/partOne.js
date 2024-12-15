@@ -1,5 +1,4 @@
 import { readFile } from "fs/promises";
-import createGrid from "../../utils/createGrid.js";
 
 const parseInput = (input) => {
   return input.split("\n").map((line) => {
@@ -18,8 +17,6 @@ const parseInput = (input) => {
 
 const simulatePositions = (width, height, seconds, input) => {
   const robots = parseInput(input);
-  const totalRobots = input.split("\n").length;
-  console.log("totalRobots:", totalRobots);
 
   robots.forEach((robot) => {
     robot.px = (robot.px + robot.vx * seconds) % width;
@@ -29,44 +26,31 @@ const simulatePositions = (width, height, seconds, input) => {
     if (robot.px < 0) robot.px += width;
     if (robot.py < 0) robot.py += height;
   });
-  
-  const uniquePositions = new Set();
+
+  // Count robots in each quadrant
+  const midX = Math.floor(width / 2);
+  const midY = Math.floor(height / 2);
+  const quadrants = [0, 0, 0, 0]; // [top-left, top-right, bottom-left, bottom-right]
 
   robots.forEach(({ px, py }) => {
-    const key = `${px},${py}`;
-    uniquePositions.add(key);
+    if (px === midX || py === midY) return; // Ignore robots on the center lines
+    if (px < midX && py < midY) quadrants[0]++; // Top-left
+    else if (px >= midX && py < midY) quadrants[1]++; // Top-right
+    else if (px < midX && py >= midY) quadrants[2]++; // Bottom-left
+    else if (px >= midX && py >= midY) quadrants[3]++; // Bottom-right
   });
 
-  const robotsOnUniquePos = uniquePositions.size;
-  console.log("robotsOnUniquePos:", robotsOnUniquePos)
- 
-  const grid = createGrid(101, 103, ".");
-
-  robots.forEach((robot) => {
-    grid[robot.py][robot.px] = "X";
-  });
-
-  grid.forEach(line => console.log(line.join("")));
-  if (totalRobots === robotsOnUniquePos) {
-
-    console.log("Seconds:", seconds)
-
-    return true;
-  }
-
-  console.log("Seconds:", seconds)
-  return false;
+  // Calculate safety factor
+  const safetyFactor = quadrants.reduce((acc, count) => acc * count, 1);
+  return safetyFactor;
 };
 
 const solvePuzzle = (input) => {
   const width = 101;
   const height = 103;
-  // const seconds = 100;
+  const seconds = 100;
 
-  // console.log(simulatePositions(width, height, seconds, input));
-  for (let seconds = 0; seconds <= 10000; seconds++) {
-    if(simulatePositions(width, height, seconds, input)) break;
-  }
+  console.log(simulatePositions(width, height, seconds, input));
 };
 
 const main = async () => {
