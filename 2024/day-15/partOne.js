@@ -1,11 +1,5 @@
 import { readFile } from "fs/promises";
 
-/*
-
-
-
-*/
-
 const parseInput = (input) => {
   const [mapSection, movesSection] = input.split("\n\n");
   const map = mapSection.split("\n").map((line) => line.split(""));
@@ -13,50 +7,83 @@ const parseInput = (input) => {
   return { map, moves };
 };
 
-const printMap = (map) => map.forEach((l) => console.log(l.join("")));
-
 const findRobotPosition = (map) => {
   for (let i = 0; i < map.length; i++) {
     for (let j = 0; j < map[i].length; j++) {
       if (map[i][j] === "@") {
-        return [j, i];
+        return [j, i]; // [x, y]
       }
     }
   }
 };
 
-const performMove = (map, move, robotPos) => {
-  const directions = {
-    ">": [0, 1],
-    v: [1, 0],
-    "<": [0, -1],
-    "^": [-1, 0],
-  };
-
-  
-};
-
-const calculateTotalBoxGPS = (map) => {
-  console.log("calculateTotalBoxGPS(map)");
+const calculateTotalGPS = (map) => {
+  let totalGPS = 0;
+  for (let y = 0; y < map.length; y++) {
+    for (let x = 0; x < map[y].length; x++) {
+      if (map[y][x] === "O") {
+        totalGPS += 100 * y + x;
+      }
+    }
+  }
+  return totalGPS;
 };
 
 const solvePuzzle = (input) => {
   const { map, moves } = parseInput(input);
 
-  printMap(map);
+  let robotPosition = findRobotPosition(map);
+
+  const directions = {
+    ">": [1, 0], // right
+    v: [0, 1], // down
+    "<": [-1, 0], // left
+    "^": [0, -1], // up
+  };
 
   moves.forEach((move) => {
-    const robotPosition = findRobotPosition(map)
-    
-    performMove(map, move, robotPosition);
+    const [dx, dy] = directions[move];
+    const [x, y] = robotPosition;
+    const newX = x + dx;
+    const newY = y + dy;
+
+    const nextCell = map[newY]?.[newX];
+
+    if (nextCell === ".") {
+      map[y][x] = ".";
+      map[newY][newX] = "@";
+      robotPosition = [newX, newY];
+    } else if (nextCell === "O") {
+      let currentX = newX;
+      let currentY = newY;
+      const boxPositions = [];
+
+      while (map[currentY]?.[currentX] === "O") {
+        boxPositions.push([currentX, currentY]);
+        currentX += dx;
+        currentY += dy;
+      }
+
+      if (map[currentY]?.[currentX] === ".") {
+        for (let i = boxPositions.length - 1; i >= 0; i--) {
+          const [boxX, boxY] = boxPositions[i];
+          map[boxY + dy][boxX + dx] = "O";
+          map[boxY][boxX] = ".";
+        }
+        map[y][x] = ".";
+        map[newY][newX] = "@";
+        robotPosition = [newX, newY];
+      }
+    }
   });
 
-  calculateTotalBoxGPS(map);
+  const totalGPS = calculateTotalGPS(map);
+  console.log("totalGPS:", totalGPS);
 };
 
 const main = async () => {
   try {
-    const input = (await readFile("test.txt", "utf-8")).trim();
+    const input = (await readFile("input.txt", "utf-8")).trim();
 
     solvePuzzle(input);
   } catch (err) {
