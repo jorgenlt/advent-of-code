@@ -19,19 +19,21 @@ const getStartEndPos = (grid) => {
 const bfsFromEnd = (grid, end) => {
   const rows = grid.length;
   const cols = grid[0].length;
+
   const distances = Array.from({ length: rows }, () =>
     Array(cols).fill(Infinity)
   );
 
   const queue = [];
   queue.push(end);
-  distances[end[1]][end[0]] = 0; // Corrected index
+
+  distances[end[1]][end[0]] = 0; // Distance of end pos is set to 0
 
   const directions = [
-    [1, 0], // down
-    [-1, 0], // up
-    [0, 1], // right
-    [0, -1], // left
+    [1, 0], // Down
+    [-1, 0], // Up
+    [0, 1], // Right
+    [0, -1], // Left
   ];
 
   while (queue.length > 0) {
@@ -41,6 +43,8 @@ const bfsFromEnd = (grid, end) => {
       const newX = x + dx;
       const newY = y + dy;
 
+      // Check if position is valid and update distance if it
+      // has not been visited
       if (
         newX >= 0 &&
         newX < cols &&
@@ -61,26 +65,29 @@ const bfsFromEnd = (grid, end) => {
 const findFastestPath = (grid, start, endDistances) => {
   const queue = [];
   queue.push([start, []]);
+
   const visited = new Set();
   visited.add(start.toString());
 
   while (queue.length > 0) {
     const [[x, y], currentPath] = queue.shift();
+
     const newPath = [...currentPath, [x, y]];
 
-    if (grid[y][x] === "E") return newPath;
+    if (grid[y][x] === "E") return newPath; // End is reached, return the path
 
     const directions = [
-      [1, 0], // down
-      [-1, 0], // up
-      [0, 1], // right
-      [0, -1], // left
+      [1, 0], // Down
+      [-1, 0], // Up
+      [0, 1], // Right
+      [0, -1], // Left
     ];
 
     for (const [dx, dy] of directions) {
       const newX = x + dx;
       const newY = y + dy;
 
+      // Check if position is valid and if it's a shorter path
       if (
         newX >= 0 &&
         newX < grid[0].length &&
@@ -104,7 +111,7 @@ const findFastestPath = (grid, start, endDistances) => {
   return [];
 };
 
-const countCheats = (grid, path, endDistances, minBenefit) => {
+const countCheats = (path, endDistances, minBenefit) => {
   let cheats = 0;
 
   for (let i = 0; i < path.length; i++) {
@@ -113,9 +120,11 @@ const countCheats = (grid, path, endDistances, minBenefit) => {
       const b = path[j];
       const manhattanDistance = calculateManhattanDistance(a, b);
 
+      // For Part 2: change from 2 ps to 20 ps
       if (manhattanDistance > 2) continue;
 
       const dirPathLength = manhattanDistance;
+
       const distanceBToEnd = endDistances[b[1]][b[0]];
 
       if (distanceBToEnd + dirPathLength >= endDistances[a[1]][a[0]]) continue;
@@ -134,11 +143,14 @@ const countCheats = (grid, path, endDistances, minBenefit) => {
 
 const solvePuzzle = (input) => {
   const grid = parseInput(input);
+
   const { startPos, endPos } = getStartEndPos(grid);
 
   const endDistances = bfsFromEnd(grid, endPos);
+
   const fastestPath = findFastestPath(grid, startPos, endDistances);
-  const result = countCheats(grid, fastestPath, endDistances, 100);
+
+  const result = countCheats(fastestPath, endDistances, 100);
 
   return result;
 };
