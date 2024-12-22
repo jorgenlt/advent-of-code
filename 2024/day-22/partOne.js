@@ -16,19 +16,18 @@ const getNextSecretNumber = (secretNumber) => {
   // Calculate the result of multiplying the secret number by 64.
   // Then, mix this result into the secret number.
   // Finally, prune the secret number.
-  const a = prune(mix(secretNumber, secretNumber * 64));
+  let result = prune(mix(secretNumber, secretNumber * 64));
 
   // Calculate the result of dividing the secret number by 32.
   // Round the result down to the nearest integer.
-  // Then, mix this result into the secret number. Finally, prune the secret number.
-  const b = prune(mix(a, Math.floor(a / 32)));
+  // Then, mix this result into the secret number.
+  // Finally, prune the secret number.
+  result = prune(mix(result, Math.floor(result / 32)));
 
   // Calculate the result of multiplying the secret number by 2048.
   // Then, mix this result into the secret number.
   // Finally, prune the secret number.
-  const c = prune(mix(b, b * 2048));
-
-  return c;
+  return prune(mix(result, result * 2048));
 };
 
 const getFinalSecretNumber = (initialNumber, iterations) => {
