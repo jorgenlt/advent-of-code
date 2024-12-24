@@ -49,7 +49,7 @@ const simulateCircuit = (wireValues, gates) => {
     for (const { inputs, operator, wire } of gates) {
       if (!wireValues.has(wire)) {
         const [input1, input2] = inputs.map((input) => wireValues.get(input));
-        if (input1 && input2) {
+        if (input1 !== undefined && input2 !== undefined) {
           wireValues.set(wire, performOperation([input1, input2], operator));
           changesMade = true;
         }
