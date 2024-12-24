@@ -43,63 +43,40 @@ const performOperation = ([input1, input2], operator) => {
 };
 
 const simulateCircuit = (wireValues, gates) => {
-  for (const gate of gates) {
-    if (wireValues.has(gate.wire)) continue;
-
-    const [input1, input2] = gate.inputs;
-
-    if (wireValues.has(input1) && wireValues.has(input2)) {
-      const inputs = [wireValues.get(input1), wireValues.get(input2)];
-
-      wireValues.set(gate.wire, performOperation(inputs, gate.operator));
+  let changesMade;
+  do {
+    changesMade = false;
+    for (const { inputs, operator, wire } of gates) {
+      if (!wireValues.has(wire)) {
+        const [input1, input2] = inputs.map((input) => wireValues.get(input));
+        if (input1 !== undefined && input2 !== undefined) {
+          wireValues.set(wire, performOperation([input1, input2], operator));
+          changesMade = true;
+        }
+      }
     }
-  }
+  } while (changesMade);
 
   return wireValues;
 };
 
 const getDecimalNumber = (wireValues) => {
-  const sortedZValues = Array.from(wireValues)
-    .filter(([key, value]) => key.startsWith("z"))
-    .sort((a, b) => {
-      const numA = Number(a[0].substring(1));
-      const numB = Number(b[0].substring(1));
-
-      return numB - numA;
-    });
-
-  const result = [];
-
-  sortedZValues.forEach((value) => {
-    const bit = value[1];
-
-    result.push(bit);
-  });
-
-  return parseInt(result.join(""), 2);
+  return parseInt(
+    Array.from(wireValues)
+      .filter(([key]) => key.startsWith("z"))
+      .sort((a, b) => Number(b[0].substring(1)) - Number(a[0].substring(1)))
+      .map(([, value]) => value)
+      .join(""),
+    2
+  );
 };
 
 const solvePuzzle = (input) => {
   const { initialWireValues, gates } = parseInput(input);
 
-  let wireValues = initialWireValues;
+  const finalWireValues = simulateCircuit(initialWireValues, gates);
 
-  let currentSize = wireValues.size;
-  let changed = true;
-
-  while (changed) {
-    wireValues = simulateCircuit(wireValues, gates);
-
-    if (wireValues.size === currentSize) {
-      changed = false;
-    } else {
-      currentSize = wireValues.size;
-    }
-  }
-
-  const result = getDecimalNumber(wireValues);
-
-  return result;
+  return getDecimalNumber(finalWireValues);
 };
 
 const main = async () => {
