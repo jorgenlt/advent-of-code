@@ -1,0 +1,38 @@
+MAXIMAL_CLIQUES: [1, 2, 3]
+
+┌1────────────────────────────┐
+│ potential_clique: []        │
+│ candidates: [1, 2, 3, 4, 5] │
+│ excluded: []                │
+└──────────────┬──────────────┘   
+               │
+               │current_candidate: 1
+               │potential_clique: []
+               │candidates: [1, 2, 3, 4, 5]
+               │excluded: []
+┌2─────────────┴─────────────┐
+│ potential_clique: [1]      │
+│ candidates: [2, 3]         │
+│ excluded: []               │
+└──────────────┬─────────────┘
+               ├──────────────────────────────────────────────┐
+               │current_candidate: 2                          │current_candidate: 3
+               │potential_clique: [1]                         │potential_clique: [1]
+               │candidates: [2, 3]                            │candidates: [3]
+               │excluded: []              ╔══════════════════▷│excluded: [2]
+┌3─────────────┴─────────────┐            ║                   │
+│ potential_clique: [1, 2]   │            ║    ┌7─────────────┴─────────────┐ 
+│ candidates: [3]            │            ║    │ potential_clique: [1, 3]   │
+│ excluded: []               │            ║    │ candidates: []   ◁----┬----┼---- only keep nodes that
+└──────────────┬─────────────┘            ║    │ excluded: [2]    ◁----┘    │     are neighbours of the candidate
+               ┋                          ║    └──────────────┬─────────────┘ 
+               ┋ (Skipping                ║                   │
+               ┋ Steps from above)        ║                   ▽
+               ┋                          ║              No Candidate
+╔6═══════════════════════════╗            ║              End of Branch
+║ MOVE CURRENT CANDIDATE (2) ║            ║              Back to Step 1 after recursion
+║      FROM CANDIDATES       ╠════════════╝      ╔8═══════════════════════════╗ 
+║        TO EXCLUDED         ║                   ║ MOVE CURRENT CANDIDATE (1) ║ 
+╚════════════════════════════╝                   ║      FROM CANDIDATES       ║
+                                                 ║        TO EXCLUDED         ║ 
+                                                 ╚════════════════════════════╝
