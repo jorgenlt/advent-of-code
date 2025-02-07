@@ -28,17 +28,11 @@ const solvePuzzle = (input) => {
   let pairsCount = 0;
 
   for (let i = 0; i < 40000000; i++) {
-    const newValueA = generateValue(valueA, "A")
-    const newValueB = generateValue(valueB, "B")
+    const newValueA = generateValue(valueA, "A");
+    const newValueB = generateValue(valueB, "B");
 
-    const binaryA = decimalToBinary(newValueA)
-    const binaryB = decimalToBinary(newValueB)
-
-    // console.log("binaryA:", binaryA)
-    // console.log("binaryB:", binaryB)
-
-    // console.log("---")
-
+    const binaryA = decimalToBinary(newValueA);
+    const binaryB = decimalToBinary(newValueB);
 
     if (isMatch(binaryA, binaryB)) {
       pairsCount++;
@@ -47,21 +41,6 @@ const solvePuzzle = (input) => {
     valueA = newValueA;
     valueB = newValueB;
   }
-
-
-  // console.log("valueA", valueA)
-  // console.log(generateValue(valueA, "A"))
-  // console.log(decimalToBinary(generateValue(valueA, "A")))
-
-
-
-  // const binaryA = decimalToBinary(generateValue(245556042, "A"))
-  // console.log("binaryA:", binaryA)
-  // const binaryB = decimalToBinary(generateValue(1431495498, "B"))
-  // console.log("binaryB:", binaryB)
-
-  // console.log(isMatch(binaryA, binaryB))
-  
 
   return pairsCount;
 };
