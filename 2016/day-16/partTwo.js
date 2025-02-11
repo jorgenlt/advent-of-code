@@ -1,11 +1,55 @@
-  
-import { readFile } from "fs/promises";
+const dragonCurve = (data, minLength) => {
+  if (data.length >= minLength) {
+    return data;
+  }
+  const a = data;
+  const b = data
+    .split("")
+    .reverse()
+    .map((e) => (e === "1" ? "0" : "1"))
+    .join("");
+  const result = a + "0" + b;
+
+  return dragonCurve(result, minLength);
+};
+
+const createCheckSum = (data) => {
+  let checkSum = data;
+
+  if (checkSum.length % 2 !== 0) {
+    return checkSum;
+  }
+
+  let newChecksum = "";
+
+  for (let i = 0; i < checkSum.length; i += 2) {
+    const a = checkSum[i];
+    const b = checkSum[i + 1];
+
+    const result = a === b ? "1" : "0";
+
+    newChecksum += result;
+  }
+
+  return createCheckSum(newChecksum);
+};
+
+const solvePuzzle = (initialState) => {
+  const diskLength = 35651584;
+  const data = dragonCurve(initialState, diskLength)
+    .split("")
+    .slice(0, diskLength)
+    .join("");
+  const checkSum = createCheckSum(data);
+
+  return checkSum;
+};
 
 const main = async () => {
   try {
-    const input = await readFile("input.txt", "utf-8");
-    
-    console.log(input);
+    const input = "11100010111110100";
+
+    console.log(solvePuzzle(input));
   } catch (err) {
     console.error(err);
   }
