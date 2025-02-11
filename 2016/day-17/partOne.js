@@ -15,7 +15,6 @@ const findShortestPath = (start, end, passcode) => {
 
   while (queue.length > 0) {
     const currentLocation = queue.shift();
-    console.log("currentLocation:", currentLocation);
 
     if (currentLocation.x === end.x && currentLocation.y === end.y) {
       return currentLocation.path;
@@ -25,7 +24,7 @@ const findShortestPath = (start, end, passcode) => {
       const newX = direction.dx + currentLocation.x;
       const newY = direction.dy + currentLocation.y;
 
-      if (newX < 0 || newY < 0) {
+      if (newX < 0 || newX > 3 || newY < 0 || newY > 3) {
         continue;
       }
 
