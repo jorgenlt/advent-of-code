@@ -16,22 +16,22 @@ const dragonCurve = (data, minLength) => {
 const createCheckSum = (data) => {
   let checkSum = data;
 
-  while (checkSum.length % 2 === 0) {
-    let newChecksum = "";
-
-    for (let i = 0; i < checkSum.length; i += 2) {
-      const a = checkSum[i];
-      const b = checkSum[i + 1];
-
-      const result = a === b ? "1" : "0";
-
-      newChecksum += result;
-    }
-
-    checkSum = newChecksum;
+  if (checkSum.length % 2 !== 0) {
+    return checkSum;
   }
 
-  return checkSum;
+  let newChecksum = "";
+
+  for (let i = 0; i < checkSum.length; i += 2) {
+    const a = checkSum[i];
+    const b = checkSum[i + 1];
+
+    const result = a === b ? "1" : "0";
+
+    newChecksum += result;
+  }
+
+  return createCheckSum(newChecksum);
 };
 
 const solvePuzzle = (initialState) => {
