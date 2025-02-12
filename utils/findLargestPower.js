@@ -6,7 +6,7 @@ const findLargestPower = (a, b) => {
   }
 
   let p = parseInt(Math.log(a) / Math.log(b), 10);
-  return Math.pow(x, p);
+  return Math.pow(b, p);
 };
 
 export default findLargestPower;
