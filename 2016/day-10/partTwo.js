@@ -1,5 +1,4 @@
 import { readFile } from "fs/promises";
-import { createGunzip } from "zlib";
 
 const parseInput = (input) => {
   return input.split("\n");
