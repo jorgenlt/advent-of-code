@@ -72,9 +72,50 @@ const getInstruction = (instructions, bot) => {
   }
 };
 
+const distributeChip = (register, match, botData) => {
+  const givesLowTo = match[1];
+  const givesHighTo = match[2];
+
+  if (/output/.test(givesLowTo)) {
+    register.set(givesLowTo, [...register.get(givesLowTo), botData.low]);
+  } else {
+    const receivingBotData = register.get(givesLowTo);
+
+    if (!receivingBotData.low) {
+      receivingBotData.low = botData.low;
+    } else if (botData.low > receivingBotData.low) {
+      receivingBotData.high = botData.low;
+    } else {
+      receivingBotData.high = receivingBotData.low;
+      receivingBotData.low = botData.low;
+    }
+
+    register.set(givesLowTo, receivingBotData);
+  }
+
+  if (/output/.test(givesHighTo)) {
+    register.set(givesHighTo, [...register.get(givesHighTo), botData.high]);
+  } else {
+    const receivingBotData = register.get(givesHighTo);
+
+    if (!receivingBotData.low) {
+      receivingBotData.low = botData.high;
+    } else if (botData.high > receivingBotData.low) {
+      receivingBotData.high = botData.high;
+    } else {
+      receivingBotData.high = receivingBotData.low;
+      receivingBotData.low = botData.high;
+    }
+
+    register.set(givesHighTo, receivingBotData);
+  }
+
+  return register;
+};
+
 const solvePuzzle = (input) => {
   const instructions = parseInput(input);
-  const register = initializeRegister(instructions);
+  let register = initializeRegister(instructions);
 
   let botWithTwoChips = getBotWithTwoChips(register);
 
@@ -91,45 +132,8 @@ const solvePuzzle = (input) => {
     const match = instruction.match(regex);
 
     if (match) {
-      const givesLowTo = match[1];
-      const givesHighTo = match[2];
-
-      if (/output/.test(givesLowTo)) {
-        register.set(givesLowTo, [...register.get(givesLowTo), botData.low]);
-      } else {
-        const receivingBotData = register.get(givesLowTo);
-
-        if (!receivingBotData.low) {
-          receivingBotData.low = botData.low;
-        } else if (botData.low > receivingBotData.low) {
-          receivingBotData.high = botData.low;
-        } else {
-          receivingBotData.high = receivingBotData.low;
-          receivingBotData.low = botData.low;
-        }
-
-        register.set(givesLowTo, receivingBotData);
-      }
-
-      if (/output/.test(givesHighTo)) {
-        register.set(givesHighTo, [...register.get(givesHighTo), botData.high]);
-      } else {
-        const receivingBotData = register.get(givesHighTo);
-
-        if (!receivingBotData.low) {
-          receivingBotData.low = botData.high;
-        } else if (botData.high > receivingBotData.low) {
-          receivingBotData.high = botData.high;
-        } else {
-          receivingBotData.high = receivingBotData.low;
-          receivingBotData.low = botData.high;
-        }
-
-        register.set(givesHighTo, receivingBotData);
-      }
-
+      register = distributeChip(register, match, botData);
       register.set(botWithTwoChips, { high: null, low: null });
-
       botWithTwoChips = getBotWithTwoChips(register);
     }
   }
