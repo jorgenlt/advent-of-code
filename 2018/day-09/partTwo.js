@@ -14,14 +14,6 @@ const initializeRegister = (players) => {
   return register;
 };
 
-const getCircularIndex = (index, arrayLength) => {
-  // Use modulo to find the wrapped index
-  const wrappedIndex = index % arrayLength;
-
-  // If wrappedIndex is negative, adjust to get the positive index
-  return wrappedIndex >= 0 ? wrappedIndex : wrappedIndex + arrayLength;
-};
-
 const solvePuzzle = (input) => {
   let [totalPlayers, lastMarble] = parseInput(input);
 
@@ -29,50 +21,43 @@ const solvePuzzle = (input) => {
 
   const register = initializeRegister(totalPlayers);
 
-  const circle = [0];
+  const circle = new Map();
+  circle.set(0, { prev: 0, next: 0 });
 
   let currentMarble = 0;
-  let currentMarbleIndex = circle.indexOf(currentMarble);
-  let nextMarble = 1;
   let currentPlayer = 1;
 
-  while (nextMarble <= lastMarble) {
-    console.log(`${Math.ceil((currentMarble / lastMarble) * 100)} %`);
+  for (let marble = 1; marble <= lastMarble; marble++) {
+    if (marble % 23 === 0) {
+      let score = marble;
+      let removal = currentMarble;
 
-    if (nextMarble % 23 === 0) {
-      let score = nextMarble;
-      nextMarble++;
+      for (let i = 0; i < 7; i++) {
+        removal = circle.get(removal).prev;
+      }
 
-      const removalIndex = getCircularIndex(
-        currentMarbleIndex - 7,
-        circle.length
-      );
-      score += circle[removalIndex];
-      circle.splice(removalIndex, 1);
+      score += removal;
 
-      currentMarbleIndex = removalIndex;
-      currentMarble = circle[currentMarbleIndex];
+      const { prev: removalPrev, next: removalNext } = circle.get(removal);
+      circle.get(removalPrev).next = removalNext;
+      circle.get(removalNext).prev = removalPrev;
+      circle.delete(removal);
+
+      currentMarble = removalNext;
 
       register.set(currentPlayer, register.get(currentPlayer) + score);
     } else {
-      const placeMarbleIndex = getCircularIndex(
-        currentMarbleIndex + 2,
-        circle.length
-      );
+      const node1 = circle.get(currentMarble).next;
+      const node2 = circle.get(node1).next;
 
-      circle.splice(placeMarbleIndex, 0, nextMarble);
-      currentMarble = nextMarble;
-      currentMarbleIndex = placeMarbleIndex;
-      nextMarble++;
-    }
+      circle.set(marble, { prev: node1, next: node2 });
+      circle.get(node1).next = marble;
+      circle.get(node2).prev = marble;
 
-    if (currentPlayer === totalPlayers) {
-      currentPlayer = 1;
-    } else {
-      currentPlayer++;
+      currentMarble = marble;
     }
+    currentPlayer = currentPlayer === totalPlayers ? 1 : currentPlayer + 1;
   }
-
   return Math.max(...register.values());
 };
 
