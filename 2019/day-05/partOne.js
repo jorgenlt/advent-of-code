@@ -28,11 +28,11 @@ const runIntcodeProgram = (program) => {
         i += 4;
         break;
       case 3:
-        program[program[i + 1]] = 1; // Setting input value 1 as specified
+        program[program[i + 1]] = 1;
         i += 2;
         break;
       case 4:
-        console.log(getParameterValue(1, modes[0])); // Output the diagnostic code
+        console.log(getParameterValue(1, modes[0]));
         i += 2;
         break;
       case 99:

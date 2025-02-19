@@ -33,11 +33,11 @@ const runIntcodeProgram = (program) => {
         i += 4;
         break;
       case 3:
-        program[program[i + 1]] = 5; // Hardcoding input value 5 as specified
+        program[program[i + 1]] = 5;
         i += 2;
         break;
       case 4:
-        console.log(getParameterValue(1, modes)); // Output the diagnostic code
+        console.log(getParameterValue(1, modes));
         i += 2;
         break;
       case 5:
