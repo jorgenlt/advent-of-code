@@ -22,10 +22,7 @@ const isValid = (prevNums, number) => {
   return false;
 };
 
-const solvePuzzle = (input) => {
-  const numbers = parseInput(input);
-  const preambleSize = 25;
-
+const getInvalidNumber = (numbers, preambleSize) => {
   for (let i = preambleSize; i < numbers.length; i++) {
     const number = numbers[i];
     const prevNums = numbers.slice(i - preambleSize, i);
@@ -34,6 +31,14 @@ const solvePuzzle = (input) => {
       return number;
     }
   }
+};
+
+const solvePuzzle = (input) => {
+  const numbers = parseInput(input);
+  const preambleSize = 25;
+  const invalidNumber = getInvalidNumber(numbers, preambleSize);
+
+  return invalidNumber;
 };
 
 const main = async () => {
