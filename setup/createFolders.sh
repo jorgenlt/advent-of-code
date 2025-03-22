@@ -12,17 +12,22 @@ for i in $(seq -w 1 25); do
   js_content='  
 import { readFile } from "fs/promises";
 
+const parseInput = (input) => {};
+
+const solvePuzzle = (input) => {};
+
 const main = async () => {
   try {
-    const input = await readFile("input.txt", "utf-8");
+    const input = (await readFile("input.txt", "utf-8")).trim();
     
-    console.log(input);
+    console.log(solvePuzzle(input));
   } catch (err) {
     console.error(err);
   }
 };
 
-main();'
+main();
+'
 
   echo "$js_content" >"$dir_name/partOne.js"
   echo "$js_content" >"$dir_name/partTwo.js"
