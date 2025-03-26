@@ -4,22 +4,39 @@ const parseInput = (input) => {
   return input.split("\n").map((l) => l.split(""));
 };
 
-const scoring = {
-  curlyBracket: 1197,
-  squareBracket: 57,
-  parenthesis: 3,
-  angleBracket: 25137,
-};
-
 const evaluateLine = (line) => {
-  
-}
+  const score = {
+    ")": 3,
+    "]": 57,
+    "}": 1197,
+    ">": 25137,
+  };
 
-console.log(evaluateLine("{([(<{}[<>[]}>{[]{[(<()>".split("")))
+  const brackets = {
+    "{": "}",
+    "[": "]",
+    "(": ")",
+    "<": ">",
+  };
+
+  const stack = [];
+
+  for (const char of line) {
+    if (brackets[char]) {
+      stack.push(char);
+    } else {
+      const lastChar = stack.pop();
+      if (char !== brackets[lastChar]) {
+        return score[char];
+      }
+    }
+  }
+
+  return 0;
+};
 
 const solvePuzzle = (input) => {
   const lines = parseInput(input);
-
 
   let sum = 0;
 
@@ -34,9 +51,9 @@ const solvePuzzle = (input) => {
 
 const main = async () => {
   try {
-    const input = (await readFile("test.txt", "utf-8")).trim();
+    const input = (await readFile("input.txt", "utf-8")).trim();
 
-    // console.log(solvePuzzle(input));
+    console.log(solvePuzzle(input));
   } catch (err) {
     console.error(err);
   }
