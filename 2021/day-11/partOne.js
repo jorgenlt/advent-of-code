@@ -35,7 +35,7 @@ const directions = [
   [1, -1],
   [-1, 1],
   [1, 1],
-]
+];
 
 const step = (octopuses) => {
   const yMax = octopuses.length;
@@ -77,7 +77,7 @@ const step = (octopuses) => {
   // Set octopuses that flashed to 0
   for (let y = 0; y < yMax; y++) {
     for (let x = 0; x < xMax; x++) {
-      if(flashed[y][x]) {
+      if (flashed[y][x]) {
         octopuses[y][x] = 0;
       }
     }
@@ -86,20 +86,33 @@ const step = (octopuses) => {
   return octopuses;
 };
 
+const simulate = (octopuses, steps) => {
+  let totalFlashes = 0;
+
+  for (let i = 0; i < steps; i++) {
+    step(octopuses);
+
+    for (const row of octopuses) {
+      for (const cell of row) {
+        if (cell === 0) totalFlashes++;
+      }
+    }
+  }
+
+  return totalFlashes;
+};
+
 const solvePuzzle = (input) => {
   const octopuses = parseInput(input);
 
-  const oneStep = step(octopuses);
+  const result = simulate(octopuses, 100);
 
-  const afterStepOne =
-    "6594254334385696582263756672847252447257746849658952786357563287952832799399224559579596656394862637";
-
-  console.log(oneStep.map((l) => l.join("")).join("") === afterStepOne);
+  return result;
 };
 
 const main = async () => {
   try {
-    const input = await readFile("test.txt", "utf-8");
+    const input = await readFile("input.txt", "utf-8");
 
     console.log(solvePuzzle(input));
   } catch (err) {
