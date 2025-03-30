@@ -1,4 +1,5 @@
 import { readFile } from "fs/promises";
+import createGrid from "../../utils/createGrid.js";
 
 const parseInput = (input) => {
   return input
@@ -24,10 +25,65 @@ Finally, any octopus that flashed during this step has its energy
 level set to 0, as it used all of its energy to flash.
 
 */
-const step = (octopuses) => {
-  let didChange = false;
 
-  
+const directions = [
+  [0, -1],
+  [0, 1],
+  [-1, 0],
+  [1, 0],
+  [-1, -1],
+  [1, -1],
+  [-1, 1],
+  [1, 1],
+]
+
+const step = (octopuses) => {
+  const yMax = octopuses.length;
+  const xMax = octopuses[0].length;
+
+  const flashed = createGrid(xMax, yMax, false);
+
+  // Increase energy of all octopuses by 1
+  for (let y = 0; y < yMax; y++) {
+    for (let x = 0; x < xMax; x++) {
+      octopuses[y][x]++;
+    }
+  }
+
+  // Process flashes
+  let newFlash = true;
+  while (newFlash) {
+    newFlash = false;
+
+    for (let y = 0; y < yMax; y++) {
+      for (let x = 0; x < xMax; x++) {
+        if (octopuses[y][x] > 9 && !flashed[y][x]) {
+          flashed[y][x] = true;
+          newFlash = true;
+
+          for (const [dx, dy] of directions) {
+            const newX = x + dx;
+            const newY = y + dy;
+
+            if (newX >= 0 && newX < xMax && newY >= 0 && newY < yMax) {
+              octopuses[newY][newX]++;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Set octopuses that flashed to 0
+  for (let y = 0; y < yMax; y++) {
+    for (let x = 0; x < xMax; x++) {
+      if(flashed[y][x]) {
+        octopuses[y][x] = 0;
+      }
+    }
+  }
+
+  return octopuses;
 };
 
 const solvePuzzle = (input) => {
@@ -35,7 +91,8 @@ const solvePuzzle = (input) => {
 
   const oneStep = step(octopuses);
 
-  const afterStepOne = "6594254334385696582263756672847252447257746849658952786357563287952832799399224559579596656394862637";
+  const afterStepOne =
+    "6594254334385696582263756672847252447257746849658952786357563287952832799399224559579596656394862637";
 
   console.log(oneStep.map((l) => l.join("")).join("") === afterStepOne);
 };
