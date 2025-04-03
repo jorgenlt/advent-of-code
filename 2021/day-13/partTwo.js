@@ -6,9 +6,7 @@ const printGrid = (grid) => grid.forEach((l) => console.log(l.join("")));
 
 const parseInput = (input) => {
   const [section1, section2] = input.trim().split("\n\n");
-
   const dots = section1.split("\n").map((l) => l.split(",").map(Number));
-
   const instructions = section2.split("\n").map((l) =>
     l
       .split(" ")[2]
@@ -42,15 +40,19 @@ const foldGrid = (grid, instruction) => {
 
   const workingGrid = direction === "x" ? transposeMatrix(grid) : [...grid];
 
-  
   const top = workingGrid.slice(0, foldIndex);
   const bottom = workingGrid.slice(foldIndex + 1).reverse();
-  
-  const minRows = Math.min(top.length, bottom.length)
 
-  for (let y = 0; y < minRows; y++) {
+  const topHeight = top.length;
+  const bottomHeight = bottom.length;
+
+  for (let y = 0; y < bottomHeight; y++) {
+    const topY = topHeight - bottomHeight + y;
+
+    if (topY < 0 || topY >= topHeight) continue;
+
     for (let x = 0; x < top[0].length; x++) {
-      if (bottom[y][x] === "#") top[y][x] = "#";
+      if (bottom[y][x] === "#") top[topY][x] = "#";
     }
   }
 
@@ -64,10 +66,9 @@ const solvePuzzle = (input) => {
 
   for (const instruction of instructions) {
     grid = foldGrid(grid, instruction);
-    console.log(instruction);
   }
-  
-  printGrid(grid);
+
+  printGrid(grid); // PGHZBFJC
 
   return grid;
 };
