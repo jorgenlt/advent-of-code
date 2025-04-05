@@ -2,7 +2,6 @@ import { readFile } from "fs/promises";
 
 const parseInput = (input) => {
   const [section1, section2] = input.trim().split("\n\n");
-
   const rules = new Map(section2.split("\n").map((l) => l.split(" -> ")));
 
   return [section1, rules];
@@ -13,18 +12,13 @@ const simulate = (template, rules, steps) => {
 
   for (let i = 0; i < template.length - 1; i++) {
     const pair = template.slice(i, i + 2);
-
-    if (!pairs.has(pair)) pairs.set(pair, 0);
-
-    pairs.set(pair, pairs.get(pair) + 1);
+    pairs.set(pair, (pairs.get(pair) || 0) + 1);
   }
 
   const elements = new Map();
 
   for (const char of template) {
-    if (!elements.has(char)) elements.set(char, 0);
-
-    elements.set(char, elements.get(char) + 1);
+    elements.set(char, (elements.get(char) || 0) + 1);
   }
 
   for (let step = 0; step < steps; step++) {
@@ -34,17 +28,14 @@ const simulate = (template, rules, steps) => {
       if (rules.has(pair)) {
         const insertChar = rules.get(pair);
 
-        if (!elements.has(insertChar)) elements.set(insertChar, 0);
-        elements.set(insertChar, elements.get(insertChar) + count);
+        const currentCount = elements.get(insertChar) || 0;
+        elements.set(insertChar, currentCount + count);
 
         const pair1 = pair[0] + insertChar;
         const pair2 = insertChar + pair[1];
 
-        if (!newPairs.has(pair1)) newPairs.set(pair1, 0);
-        if (!newPairs.has(pair2)) newPairs.set(pair2, 0);
-
-        newPairs.set(pair1, newPairs.get(pair1) + count);
-        newPairs.set(pair2, newPairs.get(pair2) + count);
+        newPairs.set(pair1, (newPairs.get(pair1) || 0) + count);
+        newPairs.set(pair2, (newPairs.get(pair2) || 0) + count);
       }
     }
     pairs = newPairs;
@@ -60,9 +51,9 @@ const calcResult = (elementsMap) => {
 const solvePuzzle = (input) => {
   const [template, rules] = parseInput(input);
 
-  const result = calcResult(simulate(template, rules, 40));
+  const result = simulate(template, rules, 40);
 
-  return result;
+  return calcResult(result);
 };
 
 const main = async () => {
