@@ -2,7 +2,6 @@ import { readFile } from "fs/promises";
 
 const parseInput = (input) => {
   const [section1, section2] = input.trim().split("\n\n");
-
   const rules = new Map(section2.split("\n").map((l) => l.split(" -> ")));
 
   return [section1, rules];
@@ -16,11 +15,7 @@ const step = (template, rules) => {
     const nextChar = template[i + 1];
     const pair = char + nextChar;
 
-    if (rules.has(pair)) {
-      newTemplate += char + rules.get(pair);
-    } else {
-      newTemplate += char;
-    }
+    newTemplate += char + (rules.get(pair) || "");
   }
 
   newTemplate += template.at(-1);
@@ -43,10 +38,7 @@ const calcResult = (str) => {
 
   for (let i = 0; i < str.length; i++) {
     const char = str[i];
-
-    if (!chars.has(char)) chars.set(char, 0);
-
-    chars.set(char, chars.get(char) + 1);
+    chars.set(char, (chars.get(char) || 0) + 1);
   }
 
   const sorted = [...chars].sort((a, b) => a[1] - b[1]);
