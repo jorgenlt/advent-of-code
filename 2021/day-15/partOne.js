@@ -1,8 +1,11 @@
 import { readFile } from "fs/promises";
 
 const parseInput = (input) => {
-
-}
+  return input
+    .trim()
+    .split("\n")
+    .map((l) => l.split("").map(Number));
+};
 
 const createGraph = () => new Map();
 
@@ -74,12 +77,13 @@ const dijkstra = (graph, start, finish) => {
 };
 
 const solvePuzzle = (input) => {
-
-}
+  const grid = parseInput(input);
+  console.log(grid);
+};
 
 const main = async () => {
   try {
-    const input = await readFile("input.txt", "utf-8");
+    const input = await readFile("test.txt", "utf-8");
 
     console.log(solvePuzzle(input));
   } catch (err) {
