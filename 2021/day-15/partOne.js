@@ -7,17 +7,41 @@ const parseInput = (input) => {
     .map((l) => l.split("").map(Number));
 };
 
-const createGraph = () => new Map();
+const createGridGraph = (grid) => {
+  const graph = new Map();
+  const height = grid.length;
+  const width = grid[0].length;
 
-const addVertex = (graph, vertex) => {
-  if (!graph.has(vertex)) {
-    graph.set(vertex, []);
+  const directions = [
+    [0, -1],
+    [0, 1],
+    [-1, 0],
+    [1, 0],
+  ];
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const current = `${x},${y}`;
+      if (!graph.has(current)) graph.set(current, []);
+
+      for (const [dx, dy] of directions) {
+        const newX = x + dx;
+        const newY = y + dy;
+
+        if (newX < width && newX >= 0 && newY < height && newY >= 0) {
+          const neighbor = `${newX},${newY}`;
+          const weight = grid[newY][newX];
+
+          if (!graph.has(neighbor)) graph.set(neighbor, []);
+
+          graph.get(current).push({ node: neighbor, weight: grid[newY][newX] });
+          graph.get(neighbor).push({ node: current, weight: grid[y][x] });
+        }
+      }
+    }
   }
-};
 
-const addEdge = (graph, vertex1, vertex2, weight) => {
-  graph.get(vertex1).push({ node: vertex2, weight });
-  graph.get(vertex2).push({ node: vertex1, weight });
+  return graph;
 };
 
 const dijkstra = (graph, start, finish) => {
@@ -73,17 +97,30 @@ const dijkstra = (graph, start, finish) => {
     }
   }
 
-  return path; // Return an empty array if no path is found
+  return path;
 };
 
 const solvePuzzle = (input) => {
   const grid = parseInput(input);
-  console.log(grid);
+  const graph = createGridGraph(grid);
+  const start = "0,0";
+  const finish = `${grid[0].length - 1},${grid.length - 1}`;
+
+  const path = dijkstra(graph, start, finish);
+
+  let totalRisk = 0;
+
+  for (let i = 1; i < path.length; i++) {
+    const [x, y] = path[i].split(",").map(Number);
+    totalRisk += grid[y][x];
+  }
+
+  return totalRisk;
 };
 
 const main = async () => {
   try {
-    const input = await readFile("test.txt", "utf-8");
+    const input = await readFile("input.txt", "utf-8");
 
     console.log(solvePuzzle(input));
   } catch (err) {
