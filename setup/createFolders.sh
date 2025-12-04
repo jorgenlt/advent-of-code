@@ -33,7 +33,8 @@ main();
   echo "$js_content" >"$dir_name/partTwo.js"
 
   # Create a "readme.md" file with the correct day number in the link
-  readme_content="[Puzzle](https://adventofcode.com/2024/day/$i)"
+  readme_i="${i#0}"
+  readme_content="[Puzzle](https://adventofcode.com/2025/day/$readme_i)"
   echo "$readme_content" >"$dir_name/readme.md"
 done
 
