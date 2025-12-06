@@ -5,25 +5,12 @@ const parseInput = (input) => {
 };
 
 const turnDial = (current, direction, steps) => {
-  let newPosition = current;
+  if (steps <= 0) return current;
 
-  for (let i = 0; i < steps; i++) {
-    if (direction === "L") {
-      if (newPosition === 0) {
-        newPosition = 99;
-      } else {
-        newPosition--;
-      }
-    } else {
-      if (newPosition === 99) {
-        newPosition = 0;
-      } else {
-        newPosition++;
-      }
-    }
-  }
+  const size = 100;
+  const delta = direction === "L" ? -1 : 1;
 
-  return newPosition;
+  return (((current + delta * steps) % size) + size) % size; // Wrap around
 };
 
 const solvePuzzle = (input) => {
